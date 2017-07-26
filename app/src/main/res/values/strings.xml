@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Pop Movies</string>
+    <string name="no_movies">No Movies to show</string>
+    <string name="title_activity_movie_detail">MovieDetailActivity</string>
+    <string name="no_connection">No internet connection</string>
+    <string name="popular">popular</string>
+    <string name="top_rated">top_rated</string>
+    <string name="top">Top rated</string>
+    <string name="empty_view">No movies to show</string>
+    <string name="image_view_description">Image view description</string>
+    <string name="vote_average">Vote average : %1$s</string>
+    <string name="release_date">Release date : %1$s</string>
+</resources>
