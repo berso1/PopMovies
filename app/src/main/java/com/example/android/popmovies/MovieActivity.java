@@ -38,12 +38,12 @@ public class MovieActivity extends AppCompatActivity implements MyRecyclerViewAd
     private List<Movie> movieData;
 
     private LoaderManager loaderManager;
-    RecyclerView recyclerView;
-    MyRecyclerViewAdapter adapter;
+    private RecyclerView recyclerView;
+    private MyRecyclerViewAdapter adapter;
 
-    boolean menuCalled;
+    private boolean menuCalled;
 
-    boolean isConnected;
+    private boolean isConnected;
 
 
 //Constructor=======================================================================================

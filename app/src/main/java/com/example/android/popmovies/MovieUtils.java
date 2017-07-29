@@ -94,7 +94,7 @@ import java.util.List;
          */
 
         private static URL createUrl(String stringUrl) {
-            URL url = null;
+            URL url;
             try {
                 url = new URL(stringUrl);
             } catch (MalformedURLException exception) {

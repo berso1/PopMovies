@@ -20,14 +20,12 @@ public class MyRecyclerViewAdapter  extends
     private ItemClickListener mClickListener;
     private final Context context;
     private ImageView movieIv;
-    private boolean listChange;
 
     // data is passed into the constructor
     public MyRecyclerViewAdapter(Context context, String[] movies) {
         this.mInflater = LayoutInflater.from(context);
         this.mMovies = movies;
         this.context = context;
-        this.listChange = false;
     }
 
     void swapData(List<Movie> movies) {
@@ -40,7 +38,6 @@ public class MyRecyclerViewAdapter  extends
         }
         this.mMovies = movieList;
         notifyDataSetChanged();
-        listChange=true;
     }
 
     // inflates the cell layout from xml when needed
