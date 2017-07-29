@@ -6,23 +6,41 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
 import com.squareup.picasso.Picasso;
+
+import java.util.List;
 
 
 public class MyRecyclerViewAdapter  extends
         RecyclerView.Adapter<MyRecyclerViewAdapter.ViewHolder>{
 
-    private final String[] mMovies;
+    private String[] mMovies;
     private final LayoutInflater mInflater;
     private ItemClickListener mClickListener;
     private final Context context;
     private ImageView movieIv;
+    private boolean listChange;
 
     // data is passed into the constructor
     public MyRecyclerViewAdapter(Context context, String[] movies) {
         this.mInflater = LayoutInflater.from(context);
         this.mMovies = movies;
         this.context = context;
+        this.listChange = false;
+    }
+
+    void swapData(List<Movie> movies) {
+        String [] movieList = null;
+        if(movies!=null) {
+            movieList = new String[movies.size()];
+            for (int i = 0; i < movies.size(); i++) {
+                movieList[i]=movies.get(i).getUrl();
+            }
+        }
+        this.mMovies = movieList;
+        notifyDataSetChanged();
+        listChange=true;
     }
 
     // inflates the cell layout from xml when needed
@@ -36,8 +54,8 @@ public class MyRecyclerViewAdapter  extends
     // binds the data to the text_view in each cell
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+        holder.setIsRecyclable(false);
         String movieUrl = mMovies[position];
-
         Picasso
                 .with(context)
                 .load(movieUrl)
@@ -79,5 +97,7 @@ public class MyRecyclerViewAdapter  extends
     public interface ItemClickListener {
         void onItemClick(int position);
     }
+
+
 
 }

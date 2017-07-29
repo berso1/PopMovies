@@ -28,16 +28,22 @@ public class MovieActivity extends AppCompatActivity implements MyRecyclerViewAd
     private static final String POPULAR_MOVIE_DB_URL = "http://api.themoviedb.org/3/movie/popular?api_key=";
     private static final String TOP_RATED_MOVIE_DB_URL = "http://api.themoviedb.org/3/movie/top_rated?api_key=";
 
-    private static final String KEY = "Add your Key please";
+    private static final String KEY = "Please add a valid Key";
     private static final int MOVIE_LOADER_ID = 1;
-    private RecyclerView recyclerView;
-    private String menu_selected;
+    private String menuSelected;
     private TextView mEmptyStateTextView;
     private ProgressBar mLoadingIndicator;
 
     private String movieUrls[];
     private List<Movie> movieData;
+
     private LoaderManager loaderManager;
+    RecyclerView recyclerView;
+    MyRecyclerViewAdapter adapter;
+
+    boolean menuCalled;
+
+    boolean isConnected;
 
 
 //Constructor=======================================================================================
@@ -51,26 +57,31 @@ public class MovieActivity extends AppCompatActivity implements MyRecyclerViewAd
         recyclerView = (RecyclerView) findViewById(R.id.rvNumbers);
         int numberOfColumns = Utility.calculateNoOfColumns(getApplicationContext());
         recyclerView.setLayoutManager(new GridLayoutManager(this, numberOfColumns));
-        menu_selected = getString(R.string.popular);
+        //Set up the RecyclerViewAdapter
+        adapter = new MyRecyclerViewAdapter(this, movieUrls);
+        adapter.setClickListener(this);
+        recyclerView.setAdapter(adapter);
+
+
+        menuSelected = getString(R.string.popular);
+        menuCalled = false;
         mEmptyStateTextView = (TextView) findViewById(R.id.empty_view);
         mLoadingIndicator = (ProgressBar) findViewById(R.id.loading_indicator);
         mLoadingIndicator.setVisibility(View.VISIBLE);
 
 
+            // Get a reference to the LoaderManager, in order to interact with loaders.
+        loaderManager = getLoaderManager();
+        loaderManager.initLoader(MOVIE_LOADER_ID, null, this);
 
         //Check for connectivity before calling the loader
         ConnectivityManager cm =
                 (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
 
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        boolean isConnected = activeNetwork != null &&
+        isConnected = activeNetwork != null &&
                 activeNetwork.isConnectedOrConnecting();
-
-        if (isConnected) {
-            // Get a reference to the LoaderManager, in order to interact with loaders.
-            loaderManager = getLoaderManager();
-            loaderManager.initLoader(MOVIE_LOADER_ID, null, this);
-        } else {
+        if (!isConnected) {
             mLoadingIndicator.setVisibility(View.GONE);
             mEmptyStateTextView.setText(R.string.no_connection);
         }
@@ -97,10 +108,9 @@ public class MovieActivity extends AppCompatActivity implements MyRecyclerViewAd
 
     @Override
     public Loader<List<Movie>> onCreateLoader(int i, Bundle bundle) {
-        mLoadingIndicator.setVisibility(View.VISIBLE);
-
+//        mLoadingIndicator.setVisibility(View.VISIBLE);
         String movieUri = POPULAR_MOVIE_DB_URL + KEY;
-        if (menu_selected.equals(getString(R.string.top_rated))) {
+        if (menuSelected.equals(getString(R.string.top_rated))) {
             movieUri = TOP_RATED_MOVIE_DB_URL + KEY;
         }
         return new MovieLoader(this, movieUri);
@@ -111,7 +121,9 @@ public class MovieActivity extends AppCompatActivity implements MyRecyclerViewAd
 
         if (movies == null || movies.size() == 0) {
             movieUrls = new String[0];
-            mEmptyStateTextView.setText(R.string.no_movies);
+            if (isConnected) {
+                mEmptyStateTextView.setText(R.string.no_movies);
+            }
             mEmptyStateTextView.setVisibility(View.VISIBLE);
             mLoadingIndicator.setVisibility(View.GONE);
         } else {
@@ -123,10 +135,13 @@ public class MovieActivity extends AppCompatActivity implements MyRecyclerViewAd
             mEmptyStateTextView.setVisibility(View.GONE);
         }
 
-        //Set up the RecyclerViewAdapter
-        MyRecyclerViewAdapter adapter = new MyRecyclerViewAdapter(this, movieUrls);
-        adapter.setClickListener(this);
-        recyclerView.setAdapter(adapter);
+        if(menuCalled){
+            menuCalled = false;
+            recyclerView.setAdapter(adapter);
+            adapter.swapData(movies);
+        }else{
+            adapter.swapData(movies);
+        }
         mLoadingIndicator.setVisibility(View.GONE);
 
     }
@@ -134,7 +149,7 @@ public class MovieActivity extends AppCompatActivity implements MyRecyclerViewAd
     @Override
     public void onLoaderReset(android.content.Loader<List<Movie>> loader) {
         // Loader reset, so we can clear out our existing data.
-        movieUrls = null;
+        adapter.swapData(null);
     }
 
 
@@ -151,11 +166,13 @@ public class MovieActivity extends AppCompatActivity implements MyRecyclerViewAd
         // User clicked on a menu option in the app bar overflow menu
         switch (item.getItemId()) {
             case R.id.popular:
-                menu_selected = getString(R.string.popular);
+                menuSelected = getString(R.string.popular);
+                menuCalled = true;
                 loaderManager.restartLoader(MOVIE_LOADER_ID, null, this);
                 return true;
             case R.id.top_rated:
-                menu_selected = getString(R.string.top_rated);
+                menuSelected = getString(R.string.top_rated);
+                menuCalled = true;
                 loaderManager.restartLoader(MOVIE_LOADER_ID, null, this);
                 return true;
         }
@@ -167,7 +184,9 @@ public class MovieActivity extends AppCompatActivity implements MyRecyclerViewAd
         public static int calculateNoOfColumns(Context context) {
             DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
             float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
-            return (int) (dpWidth / 185);
+            int columns = (int) dpWidth / 185;
+            if (columns == 1) columns = 2;
+            return columns;
         }
     }
 
