@@ -13,12 +13,12 @@
     <string name="favorites">Favorites</string>
     <string name="movie_insert_Item_failed">Insertion Failed</string>
     <string name="movie_insert_Item_good">Movie added to favorites</string>
-    <string name="movie_deleted_Item_good">Movie deteleted</string>
-    <string name="removeFromfavorites">Remove from favorites</string>
-    <string name="addTofavorites">Add to favorites</string>
+    <string name="movie_deleted_Item_good">Movie deleted</string>
+    <string name="remove_from_favorites">Remove from favorites</string>
     <string name="movie_removed_Item_good">Movie removed from favorites</string>
     <string name="movie_image">Movie image</string>
     <string name="favorite_button">Favorite button</string>
     <string name="play_image">Play</string>
     <string name="movie_deleted_Item_failed">Removed from favorites</string>
+    <string name="add_to_favorites">Add to favorites</string>
 </resources>

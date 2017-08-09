@@ -3,15 +3,13 @@ package com.example.android.popmovies;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/**
- * Created by berso on 8/4/17.
- */
+// Created by berso on 7/31/17.
 
 public class MovieExtras implements Parcelable {
 
-    public String itemType;
-    public String name;
-    public String url;
+    private final String itemType;
+    private final String name;
+    private final String url;
 
     public MovieExtras(String _itemType, String _name, String _url){
         itemType = _itemType;
@@ -19,7 +17,7 @@ public class MovieExtras implements Parcelable {
         url = _url;
     }
 
-    protected MovieExtras(Parcel in) {
+    private MovieExtras(Parcel in) {
         itemType = in.readString();
         name = in.readString();
         url = in.readString();

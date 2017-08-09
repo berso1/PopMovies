@@ -13,20 +13,12 @@ import android.util.Log;
 import com.example.android.popmovies.data.MovieContract.MovieEntry;
 import com.example.android.popmovies.data.MovieContract.MovieExtrasEntry;
 
-/**
- * Created by berso on 8/3/17.
- */
-
+// Created by berso on 7/31/17.
 
 /**
  * {@link ContentProvider} for PopMovie app.
  */
 public class MovieProvider extends ContentProvider {
-
-    /**
-     * Tag for the log messages
-     */
-    public static final String LOG_TAG = MovieProvider.class.getSimpleName();
 
     /**
      * URI matcher code for the content URI for Movie and MovieExtrasEntry tables
@@ -218,7 +210,7 @@ public class MovieProvider extends ContentProvider {
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
-        int rowsDeleted = 0;
+        int rowsDeleted;
         Log.v("match====", "" + match);
         switch (match) {
             case MOVIES:

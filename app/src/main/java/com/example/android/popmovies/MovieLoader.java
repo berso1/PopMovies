@@ -4,7 +4,6 @@ import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.util.Log;
 
-import java.util.ArrayList;
 import java.util.List;
 // Created by berso on 7/23/17.
 
@@ -30,7 +29,6 @@ class MovieLoader extends AsyncTaskLoader<List<Movie>> {
 
     @Override
     public List<Movie> loadInBackground() {
-        List<Movie> movies = new ArrayList<>();
         if (mUrl == null) {
             return null;
         }

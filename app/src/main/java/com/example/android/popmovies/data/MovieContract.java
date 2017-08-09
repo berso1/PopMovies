@@ -4,9 +4,8 @@ import android.content.ContentResolver;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
-/**
- * Created by berso on 7/31/17.
- */
+// Created by berso on 7/31/17.
+
 
 public class MovieContract {
 
@@ -14,7 +13,7 @@ public class MovieContract {
     }
 
     public static final String CONTENT_AUTHORITY = "com.example.android.popmovies";
-    public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
+    private static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
     public static final String PATH_MOVIES = "movies";
     public static final String PATH_MOVIE_EXTRAS = "movie_extras";
 

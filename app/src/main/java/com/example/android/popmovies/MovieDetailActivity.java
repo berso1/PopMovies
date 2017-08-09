@@ -4,13 +4,10 @@ import android.app.LoaderManager;
 import android.content.ActivityNotFoundException;
 import android.content.ContentUris;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,7 +22,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.popmovies.data.MovieContract.MovieEntry;
-import com.example.android.popmovies.data.MovieProvider;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -34,14 +30,12 @@ public class MovieDetailActivity extends AppCompatActivity
         implements LoaderManager.LoaderCallbacks<ArrayList<MovieExtras>> {
     private static final String LOG_TAG = MovieDetailActivity.class.getName();
     private static final int MOVIE_LOADER_ID = 1;
-    private static final int TRAILER_LOADER_ID = 2;
     private static final String MOVIE_DB_URL = "http://api.themoviedb.org/3/movie/";
     private static final String TRAILERS = "/videos?api_key=";
     private static final String REVIEWS = "/reviews?api_key=";
-    private static final String KEY = "53341150078643feca5e10aa6fc35020";
+    private static String KEY;
     private String movieId;
     private ArrayList<MovieExtras> trailers;
-    private Context context;
     private ListView trailers_list_view;
     private TrailerAdapter adapter;
     private Movie currentMovie;
@@ -67,6 +61,7 @@ public class MovieDetailActivity extends AppCompatActivity
         //Get intent and set data to layout
         Intent intent = getIntent();
         currentMovie = intent.getExtras().getParcelable("currentMovie");
+        KEY = intent.getExtras().get("KEY").toString();
         title_text_view.setText(currentMovie.getTitle());
         overview_text_view.setText(currentMovie.getOverview());
         vote_average_text_view.setText(getString(R.string.vote_average, currentMovie.getVoteAverage()));
@@ -81,7 +76,7 @@ public class MovieDetailActivity extends AppCompatActivity
         ImageButton favorites = (ImageButton) findViewById(R.id.movie_favorite_button);
         if(favoriteMovie == 1){
             favorites.setSelected(true);
-            tag_favorite_text_view.setText(R.string.removeFromfavorites);
+            tag_favorite_text_view.setText(R.string.remove_from_favorites);
 
         }
 
@@ -91,10 +86,10 @@ public class MovieDetailActivity extends AppCompatActivity
                 button.setSelected(!button.isSelected());
                 if (button.isSelected()) {
                     favoriteMovie = 1;
-                    tag_favorite_text_view.setText(R.string.removeFromfavorites);
+                    tag_favorite_text_view.setText(R.string.remove_from_favorites);
                     saveMovie();
                 }else{
-                    tag_favorite_text_view.setText(R.string.addTofavorites);
+                    tag_favorite_text_view.setText(R.string.add_to_favorites);
 
                     favoriteMovie = 0;
                     deleteMovie();
@@ -133,7 +128,7 @@ public class MovieDetailActivity extends AppCompatActivity
         super.onSaveInstanceState(outState);
     }
 
-    public void deleteMovie(){
+    private void deleteMovie(){
         long id = Long.parseLong(movieId);
         Uri movieUri = ContentUris.withAppendedId(MovieEntry.CONTENT_URI, id);
         int deletedRows = getContentResolver().delete(movieUri, null, null);
@@ -148,10 +143,10 @@ public class MovieDetailActivity extends AppCompatActivity
 
     }
 
-    public void saveMovie(){
+    private void saveMovie(){
 
             ContentValues values = new ContentValues();
-            Uri newUri = null;
+            Uri newUri;
         //Insert Movie
 
             values.put(MovieEntry.COLUMN_TITLE, currentMovie.getTitle());
@@ -162,8 +157,6 @@ public class MovieDetailActivity extends AppCompatActivity
             values.put(MovieEntry.COLUMN_MOVIE_ID, currentMovie.getId());
             values.put(MovieEntry.COLUMN_FAVORITE, favoriteMovie);
             newUri = getContentResolver().insert(MovieEntry.CONTENT_URI, values);
-
-            MovieProvider provider = new MovieProvider();
 
             // Show a toast message depending on whether or not the insertion was successful
             if (newUri == null ) {
@@ -237,7 +230,7 @@ public class MovieDetailActivity extends AppCompatActivity
 
     }
 
-    public void loadTrailerAndReview(String id, String itemType) {
+    private void loadTrailerAndReview(String id, String itemType) {
         Intent appIntent;
         Intent webIntent;
         Log.v(LOG_TAG,id+","+itemType);
@@ -282,27 +275,6 @@ public class MovieDetailActivity extends AppCompatActivity
     public void onLoaderReset(Loader<ArrayList<MovieExtras>> loader) {
         trailers = null;
     }
-
-//cursor loader methods====================================================================================
-
-    private LoaderCallbacks<Cursor> dataResultLoaderListener
-            = new LoaderCallbacks<Cursor>() {
-
-        @Override
-        public android.support.v4.content.Loader<Cursor> onCreateLoader(int id, Bundle args) {
-            return null;
-        }
-
-        @Override
-        public void onLoadFinished(android.support.v4.content.Loader<Cursor> loader, Cursor data) {
-
-        }
-
-        @Override
-        public void onLoaderReset(android.support.v4.content.Loader<Cursor> loader) {
-
-        }
-    };
 
 }
 

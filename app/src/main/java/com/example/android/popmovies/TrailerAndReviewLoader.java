@@ -6,19 +6,16 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
-/**
- * Created by berso on 8/1/17.
- */
+// Created by berso on 7/31/17.
+class TrailerAndReviewLoader extends AsyncTaskLoader<ArrayList<MovieExtras>> {
 
-public class TrailerAndReviewLoader extends AsyncTaskLoader<ArrayList<MovieExtras>> {
-
-    private final String mTrailereUrl;
+    private final String mTrailerUrl;
     private final String mReviewUrl;
 
 
     public TrailerAndReviewLoader(Context context, String trailerUrl,String reviewUrl) {
         super(context);
-        this.mTrailereUrl = trailerUrl;
+        this.mTrailerUrl = trailerUrl;
         this.mReviewUrl = reviewUrl;
     }
 
@@ -29,11 +26,11 @@ public class TrailerAndReviewLoader extends AsyncTaskLoader<ArrayList<MovieExtra
 
     @Override
     public ArrayList<MovieExtras> loadInBackground() {
-        if (mTrailereUrl == null || mReviewUrl == null ) {
+        if (mTrailerUrl == null || mReviewUrl == null ) {
             return null;
         }
 
-        ArrayList<MovieExtras> trailers = (ArrayList<MovieExtras>) MovieUtils.fetchTrailersAndReviewData(mTrailereUrl,mReviewUrl);
+        ArrayList<MovieExtras> trailers = (ArrayList<MovieExtras>) MovieUtils.fetchTrailersAndReviewData(mTrailerUrl,mReviewUrl);
         Log.v("loader",""+trailers.size());
 
         return trailers;

@@ -52,7 +52,8 @@
         android:layout_marginRight="1dp"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/image_view"
-        android:layout_marginLeft="8dp" />
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="@dimen/margin8dp"/>
 
     <TextView
         android:id="@+id/vote_average"
@@ -65,7 +66,8 @@
         android:layout_marginRight="1dp"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/image_view"
-        android:layout_marginLeft="8dp" />
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="@dimen/margin8dp"/>
 
 
     <TextView
@@ -116,7 +118,7 @@
         android:id="@+id/tag_favorites"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/addTofavorites"
+        android:text="@string/add_to_favorites"
         android:textColor="@android:color/black"
         android:textSize="@dimen/favorite_tag_size"
         app:layout_constraintLeft_toRightOf="@+id/image_view"

@@ -35,7 +35,7 @@ public class MovieActivity extends AppCompatActivity implements MyRecyclerViewAd
     private static final String POPULAR_MOVIE_DB_URL = "http://api.themoviedb.org/3/movie/popular?api_key=";
     private static final String TOP_RATED_MOVIE_DB_URL = "http://api.themoviedb.org/3/movie/top_rated?api_key=";
 
-    private static final String KEY = "53341150078643feca5e10aa6fc35020";
+    private static final String KEY = "Please add a valid KEY";
     private static final int MOVIE_LOADER_ID = 1;
     private String menuSelected;
     private TextView mEmptyStateTextView;
@@ -126,6 +126,7 @@ public class MovieActivity extends AppCompatActivity implements MyRecyclerViewAd
         //set the clicked movie info to pass to MovieDetailActivity
         Movie currentMovie = movieData.get(position);
         intent.putExtra("currentMovie",currentMovie);
+        intent.putExtra("KEY",KEY);
         startActivity(intent);
     }
 
@@ -233,7 +234,6 @@ public class MovieActivity extends AppCompatActivity implements MyRecyclerViewAd
     }
 
 //Stetho tool class=================================================================================
-
 
     private static class SamplerDuperPluginsProvider implements DumperPluginsProvider {
         private final Context mContext;

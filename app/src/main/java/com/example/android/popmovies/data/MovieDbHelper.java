@@ -6,14 +6,12 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.example.android.popmovies.data.MovieContract.MovieEntry;
 
-/**
- * Created by berso on 8/3/17.
- */
+// Created by berso on 7/31/17.
 
-public class MovieDbHelper extends SQLiteOpenHelper {
+class MovieDbHelper extends SQLiteOpenHelper {
 
-    public static final int DATABASE_VERSION = 3;
-    public static final String DATABASE_NAME = "Movies.db";
+    private static final int DATABASE_VERSION = 3;
+    private static final String DATABASE_NAME = "Movies.db";
 
     private static final String CREATE_MOVIES_TABLE =
             "CREATE TABLE " + MovieEntry.TABLE_NAME + " (" +

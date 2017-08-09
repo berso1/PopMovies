@@ -104,7 +104,7 @@
         android:id="@+id/tag_favorites"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/addTofavorites"
+        android:text="@string/add_to_favorites"
         android:textColor="@android:color/black"
         android:textSize="@dimen/favorite_tag_size"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -115,7 +115,7 @@
 
 <!-- I have this error: The vertically scrolling 'ScrollView' should not contain
      another vertically scrolling widget ('ListView')
-     but some movies have a long overview so the Scrooll view is needed
+     but some movies have a long overview so the Scroll view is needed
    -->
     <ListView
         android:id="@+id/trailers"

@@ -192,7 +192,7 @@ import java.util.List;
             if (TextUtils.isEmpty(movieJSON)) {
                 return null;
             }
-            List<MovieExtras> movieExtras = new ArrayList<MovieExtras>();
+            List<MovieExtras> movieExtras = new ArrayList<>();
             try {
                 JSONObject baseJsonResponse = new JSONObject(movieJSON);
                 JSONArray results = baseJsonResponse.getJSONArray("results");
@@ -213,7 +213,7 @@ import java.util.List;
                 return null;
             }
 
-            List<MovieExtras> movieExtras = new ArrayList<MovieExtras>();
+            List<MovieExtras> movieExtras = new ArrayList<>();
 
             try {
                 JSONObject baseJsonResponse = new JSONObject(movieJSON);
