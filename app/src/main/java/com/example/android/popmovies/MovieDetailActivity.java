@@ -117,6 +117,7 @@ public class MovieDetailActivity extends AppCompatActivity
 
        // trailers = new ArrayList<>();
         trailers = null;
+        adapter = new TrailerAdapter();
         LoaderManager loaderManager = getLoaderManager();
 
         // Check for savedInstanceState key movies, to avoid re load data from internet
@@ -125,8 +126,8 @@ public class MovieDetailActivity extends AppCompatActivity
             loaderManager.initLoader(MOVIE_LOADER_ID, null, this);
         } else {
             trailers = savedInstanceState.getParcelableArrayList("trailers");
-            adapter = new TrailerAdapter();
-            trailers_list_view.setAdapter(adapter);
+            adapter.swapData(trailers);
+          //  trailers_list_view.setAdapter(adapter);
         }
 
     }
@@ -184,8 +185,12 @@ public class MovieDetailActivity extends AppCompatActivity
 
 
     class TrailerAdapter extends ArrayAdapter<MovieExtras>  {
+
+        private ArrayList<MovieExtras> mTrailers;
+
         TrailerAdapter() {
             super(MovieDetailActivity.this, R.layout.trailer_item, trailers);
+            mTrailers = trailers;
         }
 
         public View getView(int position, View convertView, ViewGroup parent) {
@@ -201,7 +206,7 @@ public class MovieDetailActivity extends AppCompatActivity
             ImageView play = (ImageView) row.findViewById(R.id.play);
             TextView tv = (TextView) row.findViewById(R.id.name);
 
-            MovieExtras movieExtras = trailers.get(position);
+            MovieExtras movieExtras = mTrailers.get(position);
             final String itemType = movieExtras.getItemType();
             final String name = movieExtras.getName();
 
@@ -221,7 +226,7 @@ public class MovieDetailActivity extends AppCompatActivity
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int position,
                                         long id) {
-                    MovieExtras movieExtras = trailers.get(position);
+                    MovieExtras movieExtras = mTrailers.get(position);
                     final String itemType = movieExtras.getItemType();
                     final String videoId = movieExtras.getUrl();
                     loadTrailerAndReview(videoId,itemType);
@@ -233,7 +238,7 @@ public class MovieDetailActivity extends AppCompatActivity
         }
 
         void swapData(ArrayList<MovieExtras> trailer_data) {
-            trailers = trailer_data;
+            mTrailers = trailer_data;
             notifyDataSetChanged();
         }
 
@@ -275,6 +280,7 @@ public class MovieDetailActivity extends AppCompatActivity
     public void onLoadFinished(Loader<ArrayList<MovieExtras>> loader, ArrayList<MovieExtras> data) {
         trailers = data;
         adapter = new TrailerAdapter();
+        //adapter.swapData(data);
         trailers_list_view.setAdapter(adapter);
     }
 

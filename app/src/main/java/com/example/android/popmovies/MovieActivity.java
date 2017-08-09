@@ -34,7 +34,7 @@ public class MovieActivity extends AppCompatActivity implements MyRecyclerViewAd
     private static final String POPULAR_MOVIE_DB_URL = "http://api.themoviedb.org/3/movie/popular?api_key=";
     private static final String TOP_RATED_MOVIE_DB_URL = "http://api.themoviedb.org/3/movie/top_rated?api_key=";
 
-    private static final String KEY = "Please add a valid Key";
+    private static final String KEY = "53341150078643feca5e10aa6fc35020";
     private static final int MOVIE_LOADER_ID = 1;
     private String menuSelected;
     private TextView mEmptyStateTextView;
@@ -42,7 +42,6 @@ public class MovieActivity extends AppCompatActivity implements MyRecyclerViewAd
     private static final String LOG_TAG = MovieActivity.class.getName();
 
     private String movieUrls[];
-   // private List<Movie> movieData;
     private ArrayList<Movie> movieData;
 
     private LoaderManager loaderManager;
