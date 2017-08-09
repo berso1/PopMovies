@@ -12,4 +12,10 @@
         android:title="@string/top"
         app:showAsAction="never">
     </item>
+
+    <item android:id="@+id/favorites"
+        android:title="@string/favorites"
+        app:showAsAction="never">
+    </item>
+
 </menu>

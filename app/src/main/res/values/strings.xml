@@ -1,13 +1,24 @@
 <resources>
     <string name="app_name">Pop Movies</string>
     <string name="no_movies">No Movies to show</string>
-    <string name="title_activity_movie_detail">MovieDetailActivity</string>
+    <string name="title_activity_movie_detail">Movie Detail</string>
     <string name="no_connection">No internet connection</string>
-    <string name="popular">popular</string>
+    <string name="popular">Popular</string>
     <string name="top_rated">top_rated</string>
     <string name="top">Top rated</string>
     <string name="empty_view">No movies to show</string>
     <string name="image_view_description">Image view description</string>
     <string name="vote_average">Vote average : %1$s</string>
     <string name="release_date">Release date : %1$s</string>
+    <string name="favorites">Favorites</string>
+    <string name="movie_insert_Item_failed">Insertion Failed</string>
+    <string name="movie_insert_Item_good">Movie added to favorites</string>
+    <string name="movie_deleted_Item_good">Movie deteleted</string>
+    <string name="removeFromfavorites">Remove from favorites</string>
+    <string name="addTofavorites">Add to favorites</string>
+    <string name="movie_removed_Item_good">Movie removed from favorites</string>
+    <string name="movie_image">Movie image</string>
+    <string name="favorite_button">Favorite button</string>
+    <string name="play_image">Play</string>
+    <string name="movie_deleted_Item_failed">Removed from favorites</string>
 </resources>

@@ -1,4 +1,11 @@
 <resources>
-    <dimen name="picture_height">300dp</dimen>
-    <dimen name="picture_width">185dp</dimen>
+    <dimen name="title_size">30sp</dimen>
+    <dimen name="margin8dp">8dp</dimen>
+    <dimen name="detail_title_height">64dp</dimen>
+    <dimen name="trailers_size">16sp</dimen>
+    <dimen name="margin16dp">16dp</dimen>
+    <dimen name="favorite_tag_size">16sp</dimen>
+    <dimen name="portrai_text_view_width">200dp</dimen>
+    <dimen name="m0dp">0dp</dimen>
+    <dimen name="land_overview_width">250dp</dimen>
 </resources>

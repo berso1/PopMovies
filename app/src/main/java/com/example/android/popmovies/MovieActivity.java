@@ -2,6 +2,7 @@ package com.example.android.popmovies;
 
 
 import android.app.LoaderManager;
+import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
@@ -12,30 +13,38 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.facebook.stetho.DumperPluginsProvider;
+import com.facebook.stetho.Stetho;
+import com.facebook.stetho.dumpapp.DumperPlugin;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class MovieActivity extends AppCompatActivity implements MyRecyclerViewAdapter.ItemClickListener,
-        LoaderManager.LoaderCallbacks<List<Movie>> {
+        LoaderCallbacks<List<Movie>> {
 
 //Global Variables===================================================================================
 
     private static final String POPULAR_MOVIE_DB_URL = "http://api.themoviedb.org/3/movie/popular?api_key=";
     private static final String TOP_RATED_MOVIE_DB_URL = "http://api.themoviedb.org/3/movie/top_rated?api_key=";
 
-    private static final String KEY = "Please add a valid Key";
+    private static final String KEY = "53341150078643feca5e10aa6fc35020";
     private static final int MOVIE_LOADER_ID = 1;
     private String menuSelected;
     private TextView mEmptyStateTextView;
     private ProgressBar mLoadingIndicator;
+    private static final String LOG_TAG = MovieActivity.class.getName();
 
     private String movieUrls[];
-    private List<Movie> movieData;
+   // private List<Movie> movieData;
+    private ArrayList<Movie> movieData;
 
     private LoaderManager loaderManager;
     private RecyclerView recyclerView;
@@ -53,6 +62,14 @@ public class MovieActivity extends AppCompatActivity implements MyRecyclerViewAd
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        final Context context = this;
+        Stetho.initialize(
+                Stetho.newInitializerBuilder(context)
+                    .enableDumpapp(new SamplerDuperPluginsProvider(context))
+                .enableWebKitInspector(Stetho.defaultInspectorModulesProvider(context))
+                .build());
+
+
 // set up the RecyclerView
         recyclerView = (RecyclerView) findViewById(R.id.rvNumbers);
         int numberOfColumns = Utility.calculateNoOfColumns(getApplicationContext());
@@ -62,19 +79,27 @@ public class MovieActivity extends AppCompatActivity implements MyRecyclerViewAd
         adapter.setClickListener(this);
         recyclerView.setAdapter(adapter);
 
-
         menuSelected = getString(R.string.popular);
         menuCalled = false;
         mEmptyStateTextView = (TextView) findViewById(R.id.empty_view);
         mLoadingIndicator = (ProgressBar) findViewById(R.id.loading_indicator);
         mLoadingIndicator.setVisibility(View.VISIBLE);
-
-
-            // Get a reference to the LoaderManager, in order to interact with loaders.
+        // Get a reference to the LoaderManager, in order to interact with loaders.
         loaderManager = getLoaderManager();
-        loaderManager.initLoader(MOVIE_LOADER_ID, null, this);
 
-        //Check for connectivity before calling the loader
+        // Check for savedInstanceState key movies, to avoid re load data from internet
+        if(savedInstanceState == null || !savedInstanceState.containsKey("movies")) {
+            Log.v(LOG_TAG+",onCreate"," loader called");
+            loaderManager.initLoader(MOVIE_LOADER_ID, null, this);
+        }
+        else {
+            movieData = savedInstanceState.getParcelableArrayList("movies");
+            Log.v(LOG_TAG+",onCreate"," savedInstanceState movies");
+            adapter.swapData(movieData);
+            mLoadingIndicator.setVisibility(View.GONE);
+        }
+
+        //Check for connectivity
         ConnectivityManager cm =
                 (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
 
@@ -87,6 +112,12 @@ public class MovieActivity extends AppCompatActivity implements MyRecyclerViewAd
         }
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putParcelableArrayList("movies", movieData);
+        super.onSaveInstanceState(outState);
+    }
+
 //ON CLICK CALL MovieDetailActivity=================================================================
 
     @Override
@@ -94,12 +125,7 @@ public class MovieActivity extends AppCompatActivity implements MyRecyclerViewAd
         Intent intent = new Intent(MovieActivity.this, MovieDetailActivity.class);
         //set the clicked movie info to pass to MovieDetailActivity
         Movie currentMovie = movieData.get(position);
-        intent.putExtra("title", currentMovie.getTitle());
-        intent.putExtra("url", currentMovie.getUrl());
-        intent.putExtra("overview", currentMovie.getOverview());
-        intent.putExtra("voteAverage", currentMovie.getVoteAverage());
-        intent.putExtra("releaseDate", currentMovie.getReleaseDate());
-
+        intent.putExtra("currentMovie",currentMovie);
         startActivity(intent);
     }
 
@@ -108,33 +134,24 @@ public class MovieActivity extends AppCompatActivity implements MyRecyclerViewAd
 
     @Override
     public Loader<List<Movie>> onCreateLoader(int i, Bundle bundle) {
-//        mLoadingIndicator.setVisibility(View.VISIBLE);
+        mLoadingIndicator.setVisibility(View.VISIBLE);
         String movieUri = POPULAR_MOVIE_DB_URL + KEY;
         if (menuSelected.equals(getString(R.string.top_rated))) {
             movieUri = TOP_RATED_MOVIE_DB_URL + KEY;
         }
-        return new MovieLoader(this, movieUri);
+        Log.v(LOG_TAG+"MovieActivity","onCreateLoader");
+
+        return new MovieLoader(this, movieUri,menuSelected);
+
     }
 
     @Override
     public void onLoadFinished(android.content.Loader<List<Movie>> loader, List<Movie> movies) {
 
-        if (movies == null || movies.size() == 0) {
-            movieUrls = new String[0];
-            if (isConnected) {
-                mEmptyStateTextView.setText(R.string.no_movies);
-            }
-            mEmptyStateTextView.setVisibility(View.VISIBLE);
-            mLoadingIndicator.setVisibility(View.GONE);
-        } else {
-            movieData = movies;
-            movieUrls = new String[movies.size()];
-            for (int i = 0; i < movies.size(); i++) {
-                movieUrls[i] = movies.get(i).getUrl();
-            }
-            mEmptyStateTextView.setVisibility(View.GONE);
-        }
+        getMovieUrls(movies);
 
+        //validate if this is a new list of movies, re-set the adapter so the
+        //list start from #1 position.
         if(menuCalled){
             menuCalled = false;
             recyclerView.setAdapter(adapter);
@@ -149,6 +166,8 @@ public class MovieActivity extends AppCompatActivity implements MyRecyclerViewAd
     @Override
     public void onLoaderReset(android.content.Loader<List<Movie>> loader) {
         // Loader reset, so we can clear out our existing data.
+        Log.v(LOG_TAG+"MovieActivity","onLoaderReset");
+
         adapter.swapData(null);
     }
 
@@ -175,6 +194,11 @@ public class MovieActivity extends AppCompatActivity implements MyRecyclerViewAd
                 menuCalled = true;
                 loaderManager.restartLoader(MOVIE_LOADER_ID, null, this);
                 return true;
+            case R.id.favorites:
+                menuSelected = "favorites";
+                menuCalled = true;
+                loaderManager.restartLoader(MOVIE_LOADER_ID, null, this);
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -190,5 +214,42 @@ public class MovieActivity extends AppCompatActivity implements MyRecyclerViewAd
         }
     }
 
+    private void getMovieUrls(List<Movie> movies){
+        if (movies == null || movies.size() == 0) {
+            movieUrls = new String[0];
+            if (isConnected) {
+                mEmptyStateTextView.setText(R.string.no_movies);
+            }
+            mEmptyStateTextView.setVisibility(View.VISIBLE);
+            mLoadingIndicator.setVisibility(View.GONE);
+        } else {
+            movieData = (ArrayList<Movie>) movies;
+            movieUrls = new String[movies.size()];
+            for (int i = 0; i < movies.size(); i++) {
+                movieUrls[i] = movies.get(i).getUrl();
+            }
+            mEmptyStateTextView.setVisibility(View.GONE);
+        }
+    }
+
+//Stetho tool class=================================================================================
+
+
+    private static class SamplerDuperPluginsProvider implements DumperPluginsProvider {
+        private final Context mContext;
+
+        public SamplerDuperPluginsProvider(Context context){
+            mContext = context;
+        }
+
+        @Override
+        public Iterable<DumperPlugin> get() {
+            ArrayList<DumperPlugin> plugins = new ArrayList<>();
+            for (DumperPlugin defaultPlugin : Stetho.defaultDumperPluginsProvider(mContext).get()){
+                plugins.add(defaultPlugin);
+            }
+            return plugins;
+        }
+    }
 //FINISH============================================================================================
 }
