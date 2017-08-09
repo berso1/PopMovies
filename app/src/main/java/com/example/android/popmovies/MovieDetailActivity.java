@@ -9,8 +9,8 @@ import android.content.Loader;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -56,6 +56,17 @@ public class MovieDetailActivity extends AppCompatActivity
         TextView release_date_text_view = (TextView) findViewById(R.id.release_date);
         trailers_list_view = (ListView) findViewById(R.id.trailers);
         final TextView tag_favorite_text_view = (TextView) findViewById(R.id.tag_favorites);
+
+        MovieUtils.setListViewHeightBasedOnChildren(trailers_list_view);
+        trailers_list_view.setOnTouchListener(new View.OnTouchListener() {
+            // Setting on Touch Listener for handling the touch inside ScrollView
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                // Disallow the touch request for parent scroll on touch of child view
+                v.getParent().requestDisallowInterceptTouchEvent(true);
+                return false;
+            }
+        });
 
 
         //Get intent and set data to layout
@@ -112,7 +123,6 @@ public class MovieDetailActivity extends AppCompatActivity
 
         if(savedInstanceState == null || !savedInstanceState.containsKey("trailers")) {
             loaderManager.initLoader(MOVIE_LOADER_ID, null, this);
-            Log.v(LOG_TAG," no hay trailers");
         } else {
             trailers = savedInstanceState.getParcelableArrayList("trailers");
             adapter = new TrailerAdapter();
@@ -192,7 +202,6 @@ public class MovieDetailActivity extends AppCompatActivity
             TextView tv = (TextView) row.findViewById(R.id.name);
 
             MovieExtras movieExtras = trailers.get(position);
-         //   Log.v("item ",item+","+position);
             final String itemType = movieExtras.getItemType();
             final String name = movieExtras.getName();
 
@@ -233,7 +242,6 @@ public class MovieDetailActivity extends AppCompatActivity
     private void loadTrailerAndReview(String id, String itemType) {
         Intent appIntent;
         Intent webIntent;
-        Log.v(LOG_TAG,id+","+itemType);
         switch (itemType) {
             case "Trailer":
                 appIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + id));
@@ -266,7 +274,6 @@ public class MovieDetailActivity extends AppCompatActivity
     @Override
     public void onLoadFinished(Loader<ArrayList<MovieExtras>> loader, ArrayList<MovieExtras> data) {
         trailers = data;
-        Log.v(LOG_TAG,""+trailers.size());
         adapter = new TrailerAdapter();
         trailers_list_view.setAdapter(adapter);
     }

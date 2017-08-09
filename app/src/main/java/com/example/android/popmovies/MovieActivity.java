@@ -13,7 +13,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,7 +34,7 @@ public class MovieActivity extends AppCompatActivity implements MyRecyclerViewAd
     private static final String POPULAR_MOVIE_DB_URL = "http://api.themoviedb.org/3/movie/popular?api_key=";
     private static final String TOP_RATED_MOVIE_DB_URL = "http://api.themoviedb.org/3/movie/top_rated?api_key=";
 
-    private static final String KEY = "Please add a valid KEY";
+    private static final String KEY = "Please add a valid Key";
     private static final int MOVIE_LOADER_ID = 1;
     private String menuSelected;
     private TextView mEmptyStateTextView;
@@ -89,12 +88,10 @@ public class MovieActivity extends AppCompatActivity implements MyRecyclerViewAd
 
         // Check for savedInstanceState key movies, to avoid re load data from internet
         if(savedInstanceState == null || !savedInstanceState.containsKey("movies")) {
-            Log.v(LOG_TAG+",onCreate"," loader called");
             loaderManager.initLoader(MOVIE_LOADER_ID, null, this);
         }
         else {
             movieData = savedInstanceState.getParcelableArrayList("movies");
-            Log.v(LOG_TAG+",onCreate"," savedInstanceState movies");
             adapter.swapData(movieData);
             mLoadingIndicator.setVisibility(View.GONE);
         }
@@ -140,10 +137,7 @@ public class MovieActivity extends AppCompatActivity implements MyRecyclerViewAd
         if (menuSelected.equals(getString(R.string.top_rated))) {
             movieUri = TOP_RATED_MOVIE_DB_URL + KEY;
         }
-        Log.v(LOG_TAG+"MovieActivity","onCreateLoader");
-
         return new MovieLoader(this, movieUri,menuSelected);
-
     }
 
     @Override
@@ -167,8 +161,6 @@ public class MovieActivity extends AppCompatActivity implements MyRecyclerViewAd
     @Override
     public void onLoaderReset(android.content.Loader<List<Movie>> loader) {
         // Loader reset, so we can clear out our existing data.
-        Log.v(LOG_TAG+"MovieActivity","onLoaderReset");
-
         adapter.swapData(null);
     }
 

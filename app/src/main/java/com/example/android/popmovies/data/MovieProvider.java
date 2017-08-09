@@ -8,7 +8,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.example.android.popmovies.data.MovieContract.MovieEntry;
 import com.example.android.popmovies.data.MovieContract.MovieExtrasEntry;
@@ -60,8 +59,6 @@ public class MovieProvider extends ContentProvider {
 
         // Figure out if the URI matcher can match the URI to a specific code
         int match = sUriMatcher.match(uri);
-        Log.v("Uri", uri.toString() + " match=" + match);
-
         switch (match) {
             case MOVIES:
                 cursor = database.query(MovieEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
@@ -211,7 +208,6 @@ public class MovieProvider extends ContentProvider {
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
         int rowsDeleted;
-        Log.v("match====", "" + match);
         switch (match) {
             case MOVIES:
                 rowsDeleted = db.delete(MovieEntry.TABLE_NAME, selection, selectionArgs);
@@ -223,8 +219,6 @@ public class MovieProvider extends ContentProvider {
 
                 selection = MovieEntry.COLUMN_MOVIE_ID + "=?";
                 selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
-                Log.v("selectionArgs====", "" + match);
-
                 getContext().getContentResolver().notifyChange(uri, null);
                 rowsDeleted = db.delete(MovieEntry.TABLE_NAME, selection, selectionArgs);
                 return rowsDeleted;

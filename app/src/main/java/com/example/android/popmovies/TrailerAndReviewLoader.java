@@ -2,7 +2,6 @@ package com.example.android.popmovies;
 
 import android.content.AsyncTaskLoader;
 import android.content.Context;
-import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -29,11 +28,7 @@ class TrailerAndReviewLoader extends AsyncTaskLoader<ArrayList<MovieExtras>> {
         if (mTrailerUrl == null || mReviewUrl == null ) {
             return null;
         }
-
-        ArrayList<MovieExtras> trailers = (ArrayList<MovieExtras>) MovieUtils.fetchTrailersAndReviewData(mTrailerUrl,mReviewUrl);
-        Log.v("loader",""+trailers.size());
-
-        return trailers;
+        return (ArrayList<MovieExtras>) MovieUtils.fetchTrailersAndReviewData(mTrailerUrl,mReviewUrl);
     }
 }
 
