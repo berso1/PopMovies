@@ -34,7 +34,7 @@ public class MovieActivity extends AppCompatActivity implements MyRecyclerViewAd
     private static final String POPULAR_MOVIE_DB_URL = "http://api.themoviedb.org/3/movie/popular?api_key=";
     private static final String TOP_RATED_MOVIE_DB_URL = "http://api.themoviedb.org/3/movie/top_rated?api_key=";
 
-    private static final String KEY = "53341150078643feca5e10aa6fc35020";
+    private static final String KEY = "Please add a valid Key";
     private static final int MOVIE_LOADER_ID = 1;
     private String menuSelected;
     private TextView mEmptyStateTextView;
@@ -196,8 +196,8 @@ public class MovieActivity extends AppCompatActivity implements MyRecyclerViewAd
     }
 
     //SCREEN COLUMN CALCULATOR==========================================================================
-    public static class Utility {
-        public static int calculateNoOfColumns(Context context) {
+    private static class Utility {
+        static int calculateNoOfColumns(Context context) {
             DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
             float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
             int columns = (int) dpWidth / 185;
@@ -229,7 +229,7 @@ public class MovieActivity extends AppCompatActivity implements MyRecyclerViewAd
     private static class SamplerDuperPluginsProvider implements DumperPluginsProvider {
         private final Context mContext;
 
-        public SamplerDuperPluginsProvider(Context context){
+        SamplerDuperPluginsProvider(Context context){
             mContext = context;
         }
 

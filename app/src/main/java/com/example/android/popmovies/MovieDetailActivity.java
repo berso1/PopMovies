@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.Loader;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -115,19 +116,17 @@ public class MovieDetailActivity extends AppCompatActivity
                 .fit()
                 .into(imageView);
 
-       // trailers = new ArrayList<>();
-        trailers = null;
         adapter = new TrailerAdapter();
+        trailers_list_view.setAdapter(adapter);
+
         LoaderManager loaderManager = getLoaderManager();
 
         // Check for savedInstanceState key movies, to avoid re load data from internet
-
         if(savedInstanceState == null || !savedInstanceState.containsKey("trailers")) {
             loaderManager.initLoader(MOVIE_LOADER_ID, null, this);
         } else {
             trailers = savedInstanceState.getParcelableArrayList("trailers");
             adapter.swapData(trailers);
-          //  trailers_list_view.setAdapter(adapter);
         }
 
     }
@@ -184,7 +183,7 @@ public class MovieDetailActivity extends AppCompatActivity
         }
 
 
-    class TrailerAdapter extends ArrayAdapter<MovieExtras>  {
+    private class TrailerAdapter extends ArrayAdapter<MovieExtras>  {
 
         private ArrayList<MovieExtras> mTrailers;
 
@@ -193,7 +192,9 @@ public class MovieDetailActivity extends AppCompatActivity
             mTrailers = trailers;
         }
 
-        public View getView(int position, View convertView, ViewGroup parent) {
+        @NonNull
+        @Override
+        public View getView(int position, View convertView, @NonNull ViewGroup parent) {
             View row;
 
             if (convertView == null) {
@@ -242,6 +243,17 @@ public class MovieDetailActivity extends AppCompatActivity
             notifyDataSetChanged();
         }
 
+        // total number of cells
+        @Override
+        public int getCount() {
+            if(mTrailers != null){
+                return mTrailers.size();
+            }else{
+                return 0;
+            }
+        }
+
+
     }
 
     private void loadTrailerAndReview(String id, String itemType) {
@@ -279,9 +291,7 @@ public class MovieDetailActivity extends AppCompatActivity
     @Override
     public void onLoadFinished(Loader<ArrayList<MovieExtras>> loader, ArrayList<MovieExtras> data) {
         trailers = data;
-        adapter = new TrailerAdapter();
-        //adapter.swapData(data);
-        trailers_list_view.setAdapter(adapter);
+        adapter.swapData(trailers);
     }
 
     @Override
